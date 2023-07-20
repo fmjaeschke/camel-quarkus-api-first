@@ -1,7 +1,7 @@
 package org.apache.camel.example;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -28,7 +28,7 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
                 WireMockTestResource::requestReceived);
 
         // obtain value as Camel property expects
-        String host = getDomainName(server.baseUrl()).concat(":").concat(String.valueOf(server.port()));
+        String host = getUrl(server.baseUrl());
 
         // Ensure the camel component API client passes requests through the WireMock proxy
         return Map.of("api.backend1.host", host);
@@ -46,16 +46,14 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
         testInjector.injectIntoFields(server, new TestInjector.AnnotatedAndMatchesType(InjectWireMock.class, WireMockServer.class));
     }
 
-    private String getDomainName(String url) {
-        String domain = "";
+    private String getUrl(String baseUrl) {
+        URL url;
         try {
-            URI uri = new URI(url);
-            domain = uri.getHost();
-            return domain.startsWith("www.") ? domain.substring(4) : domain;
-        } catch (URISyntaxException e) {
-            // ignore
+            url = new URL(baseUrl);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
-        return domain;
+        return url.getAuthority();
     }
 
     /**
