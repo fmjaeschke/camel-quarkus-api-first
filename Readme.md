@@ -3,7 +3,7 @@
 This repository showcases how to compose a Camel Quarkus application to expose an OpenApi service adopting a contract-first approach.
 
 The code in this repository is the base for the following blog article in quarkus.io:
-[pending url]
+[Riding Camel Quarkus: effortless APIs](https://quarkus.io/blog/camel-quarkus-effortless-apis/)
 
 collects a number of Camel based flow patterns very common in large integration platforms. They are useful to represent different levels of complexity and perform sizing measurements.
 
