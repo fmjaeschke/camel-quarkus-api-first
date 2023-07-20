@@ -27,15 +27,22 @@ public class Routes extends RouteBuilder {
     @Override
     public void configure() {
         from("direct:getDetails")
-        .to("atlasmap:map/request.adm")
-        .to("direct:call-backend")
-        .to("atlasmap:map/response.adm")
-        .unmarshal(new JacksonDataFormat(IndividualDetails.class));
+                //.to("atlasmap:map/request.adm")
+                .setBody(simple("""
+                        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                        <Subscriber>
+                            <id>${body}</id>
+                        </Subscriber>
+                        """))
+                .log("Processing ${body}")
+                .to("direct:call-backend")
+                .to("atlasmap:map/response.adm")
+                .unmarshal(new JacksonDataFormat(IndividualDetails.class));
 
         from("direct:call-backend")
-        .removeHeaders("*")
-        .setHeader(Exchange.HTTP_METHOD, constant("POST"))
-        .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
-        .to("http:{{api.backend1.host}}/camel/individual/details");
+                .removeHeaders("*")
+                .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+                .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
+                .to("http:{{api.backend1.host}}/camel/individual/details");
     }
 }
