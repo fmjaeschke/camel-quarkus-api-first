@@ -50,14 +50,7 @@
                     }
                 },
                 "operationId": "getDetails"
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "required": true
-                }
-            ]
+            }
         },
         "/individual/anonymous/details/{id}": {
             "get": {
@@ -98,14 +91,7 @@
                     }
                 },
                 "operationId": "getAnonymousDetails"
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "required": true
-                }
-            ]
+            }
         }
     },
     "components": {

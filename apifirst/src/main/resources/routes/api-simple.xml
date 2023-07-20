@@ -22,23 +22,25 @@
         xmlns="http://camel.apache.org/schema/spring"
         xsi:schemaLocation="
             http://camel.apache.org/schema/spring
-            http://camel.apache.org/schema/spring/camel-spring.xsd">
+            https://camel.apache.org/schema/spring/camel-spring.xsd">
 
 
     <!-- Operation /individual/anonymous/details -->
     <route id="getAnonymousDetails">
 
-      <from uri="direct:getAnonymousDetails"/>
+        <from uri="direct:getAnonymousDetails"/>
 
-      <!-- REQUEST TRANSFORMATION -->
-      <to uri="atlasmap:map/request.adm"/>
+        <!-- REQUEST TRANSFORMATION -->
+        <to uri="atlasmap:map/request.adm"/>
 
-      <!-- CALL to BACKEND -->
-      <to uri="direct:call-backend"/>
+        <!-- CALL to BACKEND -->
+        <to uri="direct:call-backend"/>
 
-      <!-- RESPONSE TRANSFORMATION -->
-      <to uri="atlasmap:map/response-anonymous.adm"/> 
-
+        <!-- RESPONSE TRANSFORMATION -->
+        <to uri="atlasmap:map/response-anonymous.adm"/>
+        <unmarshal>
+            <json unmarshalType="org.apache.camel.example.beans.IndividualDetails"/>
+        </unmarshal>
     </route>
 
 

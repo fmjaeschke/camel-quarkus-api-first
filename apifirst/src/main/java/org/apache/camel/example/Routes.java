@@ -18,16 +18,19 @@ package org.apache.camel.example;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.example.beans.IndividualDetails;
 
+@SuppressWarnings("unused")
 public class Routes extends RouteBuilder {
 
     @Override
-    public void configure() throws Exception {
-
+    public void configure() {
         from("direct:getDetails")
         .to("atlasmap:map/request.adm")
         .to("direct:call-backend")
-        .to("atlasmap:map/response.adm");
+        .to("atlasmap:map/response.adm")
+        .unmarshal(new JacksonDataFormat(IndividualDetails.class));
 
         from("direct:call-backend")
         .removeHeaders("*")

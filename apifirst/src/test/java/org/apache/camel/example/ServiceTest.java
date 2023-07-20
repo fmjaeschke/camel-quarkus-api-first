@@ -25,14 +25,13 @@ import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @QuarkusTestResource(WireMockTestResource.class)
-public class ServiceTest {
+class ServiceTest {
 
     @Test
-    public void individual() {
-
+    void should_get_response_for_individual() {
         given()
             .when()
-                .get("/camel/individual/details/123")
+                .get("/individual/details/123")
             .then()
                 .statusCode(200)
                 .body(
@@ -45,11 +44,20 @@ public class ServiceTest {
     }
 
     @Test
-    public void anonymousIndividual() {
+    void should_get_error_response_with_wrong_id_type() {
+        given()
+                .when()
+                .get("/individual/details/a")
+                .then()
+                .statusCode(404);
+    }
 
+
+    @Test
+    void should_get_anonymous_response_for_individual() {
         given()
             .when()
-                .get("/camel/individual/anonymous/details/123")
+                .get("/individual/anonymous/details/123")
             .then()
                 .statusCode(200)
                 .body(
