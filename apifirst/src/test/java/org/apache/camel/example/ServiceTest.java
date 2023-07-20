@@ -16,10 +16,15 @@
  */
 package org.apache.camel.example;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
@@ -27,19 +32,36 @@ import static org.hamcrest.Matchers.is;
 @QuarkusTestResource(WireMockTestResource.class)
 class ServiceTest {
 
+    @InjectWireMock
+    WireMockServer wireMockServer;
+
+    @BeforeEach
+    void beforeEach() {
+        // create mock endpoint
+        wireMockServer.stubFor(
+                post(urlEqualTo("/camel/individual/details"))
+                        .willReturn(
+                                aResponse()
+                                        .withHeader("Content-Type", "application/xml")
+                                        .withStatus(200)
+                                        .withBodyFile("individual.xml")
+                        )
+        );
+    }
+
     @Test
     void should_get_response_for_individual() {
         given()
-            .when()
+                .when()
                 .get("/individual/details/123")
-            .then()
+                .then()
                 .statusCode(200)
                 .body(
-                    "fullName",     is("Some One"),
-                    "passportId",   is("123456789-A"),
-                    "addressLine1", is("1 Some Street"),
-                    "addressLine2", is("Somewhere SOME C0D3"),
-                    "addressLine3", is("UK")
+                        "fullName", is("Some One"),
+                        "passportId", is("123456789-A"),
+                        "addressLine1", is("1 Some Street"),
+                        "addressLine2", is("Somewhere SOME C0D3"),
+                        "addressLine3", is("UK")
                 );
     }
 
@@ -56,16 +78,16 @@ class ServiceTest {
     @Test
     void should_get_anonymous_response_for_individual() {
         given()
-            .when()
+                .when()
                 .get("/individual/anonymous/details/123")
-            .then()
+                .then()
                 .statusCode(200)
                 .body(
-                    "fullName",     is("**********"),
-                    "passportId",   is("**********"),
-                    "addressLine1", is("1 Some Street"),
-                    "addressLine2", is("Somewhere SOME C0D3"),
-                    "addressLine3", is("UK")
+                        "fullName", is("**********"),
+                        "passportId", is("**********"),
+                        "addressLine1", is("1 Some Street"),
+                        "addressLine2", is("Somewhere SOME C0D3"),
+                        "addressLine3", is("UK")
                 );
     }
 }
