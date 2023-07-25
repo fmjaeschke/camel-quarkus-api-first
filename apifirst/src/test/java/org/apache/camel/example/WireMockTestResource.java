@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.Map;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.Response;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +66,7 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
      * If no response was matched, payload will be null and there will be no response
      * headers.
      */
-    protected static void requestReceived(com.github.tomakehurst.wiremock.http.Request inRequest,
-                                          com.github.tomakehurst.wiremock.http.Response inResponse) {
+    protected static void requestReceived(Request inRequest, Response inResponse) {
         logger.info("WireMock request at URL: {}", inRequest.getAbsoluteUrl());
         logger.info("WireMock request body: \n{}", inRequest.getBodyAsString());
         logger.info("WireMock request headers: \n{}", inRequest.getHeaders());
