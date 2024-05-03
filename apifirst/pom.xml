@@ -7,13 +7,16 @@
     <artifactId>api-first</artifactId>
     <version>1.0.0</version>
     <properties>
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <maven.version>3.6.3</maven.version>
+        <java.version>17</java.version>
+
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <failsafe.useModulePath>false</failsafe.useModulePath>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.platform.version>3.2.10.Final</quarkus.platform.version>
-        <surefire-plugin.version>3.2.2</surefire-plugin.version>
+        <quarkus.platform.version>3.8.3</quarkus.platform.version>
+        <surefire-plugin.version>3.2.5</surefire-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -102,14 +105,8 @@
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-integration-wiremock-support</artifactId>
-            <version>3.2.3</version>
+            <version>3.8.1</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-fileupload</groupId>
-                    <artifactId>commons-fileupload</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -119,6 +116,29 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>${java.version}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>io.quarkus.platform</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
